@@ -25,7 +25,7 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      QuickSort
       SelectionSort
   other-modules:
       Paths_functional_sort

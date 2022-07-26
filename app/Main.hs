@@ -1,25 +1,17 @@
 module Main where
 
-import Lib ()
 import System.Random.Shuffle ( shuffle' )
-import System.Random ( mkStdGen, StdGen )
-import Data.List ( sort )
+import System.Random ( mkStdGen )
 
+import SelectionSort ( ssort )
 
-list :: [Int]
-list = [1..20]
-
-gen :: StdGen
-gen = mkStdGen 15
-
-shuffledList :: [Int]
-shuffledList = shuffle' list (length list) gen
+randomList :: [Int]
+randomList = shuffle' [1..20] 20 (mkStdGen 15)
 
 sortedList :: [Int]
-sortedList = sort shuffledList
+sortedList = ssort randomList
 
 main :: IO ()
 main = do
-    print list
-    print shuffledList
+    print randomList
     print sortedList

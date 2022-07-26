@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       Lib
+      SelectionSort
   other-modules:
       Paths_functional_sort
   hs-source-dirs:

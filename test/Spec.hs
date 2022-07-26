@@ -9,29 +9,26 @@ import InsertionSort (isort)
 randomList :: [Int]
 randomList = shuffle' [1..1000] 1000 (mkStdGen 15)
 
-emptyList :: [Int]
-emptyList = []
-
-singletonList :: [Int]
-singletonList = [15]
+algorithms = [("SelectionSort", ssort), ("QuickSort", qsort), ("InsertionSort", isort)]
+cases = [("Random List", randomList), ("Singleton List", [15]), ("Empty List", [])]
 
 main :: IO ()
-main = do
-    putStrLn "\nSorting Random List:\n"
-    putStrLn (check "SelectionSort" ssort randomList)
-    putStrLn (check "QuickSort" qsort randomList)
-    putStrLn (check "InsertionSort" isort randomList)
+main = checkAll cases algorithms
 
-    putStrLn "\nSorting Singleton List:\n"
-    putStrLn (check "SelectionSort" ssort singletonList)
-    putStrLn (check "QuickSort" qsort singletonList)
-    putStrLn (check "InsertionSort" isort singletonList)
+-- Checks all algorithms case by case
+checkAll :: [(String, [Int])] -> [(String, [Int] -> [Int])] -> IO ()
+checkAll [] algorithms = return ()
+checkAll cases algorithms = do
+    putStrLn ("\nSorting" ++ (fst $ head cases) ++ ":\n")
+    checkCase algorithms (snd $ head cases)
+    checkAll (tail cases) algorithms
 
-    putStrLn "\nSorting Empty List:\n"
-    putStrLn (check "SelectionSort" ssort emptyList)
-    putStrLn (check "QuickSort" qsort emptyList)
-    putStrLn (check "InsertionSort" isort emptyList)
-
+-- Checks all algorithms for the given case
+checkCase :: [(String, [Int] -> [Int])] -> [Int] -> IO ()
+checkCase [] toSort = return ()
+checkCase algorithms toSort = do
+    putStrLn (check (fst $ head algorithms) (snd $ head algorithms) randomList)
+    checkCase (tail algorithms) toSort
 
 -- returns String indicating if sort was succesful
 check :: String -> ([Int] -> [Int]) -> [Int] -> String

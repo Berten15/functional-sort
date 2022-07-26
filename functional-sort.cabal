@@ -32,6 +32,8 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , random
+    , random-shuffle
   default-language: Haskell2010
 
 executable functional-sort-exe
@@ -44,6 +46,8 @@ executable functional-sort-exe
   build-depends:
       base >=4.7 && <5
     , functional-sort
+    , random
+    , random-shuffle
   default-language: Haskell2010
 
 test-suite functional-sort-test
@@ -57,4 +61,6 @@ test-suite functional-sort-test
   build-depends:
       base >=4.7 && <5
     , functional-sort
+    , random
+    , random-shuffle
   default-language: Haskell2010

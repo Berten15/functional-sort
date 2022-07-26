@@ -4,6 +4,7 @@ import Data.List ( sort )
 
 import SelectionSort ( ssort )
 import QuickSort ( qsort)
+import InsertionSort (isort)
 
 randomList :: [Int]
 randomList = shuffle' [1..1000] 1000 (mkStdGen 15)
@@ -19,14 +20,17 @@ main = do
     putStrLn "\nSorting Random List:\n"
     putStrLn (check "SelectionSort" ssort randomList)
     putStrLn (check "QuickSort" qsort randomList)
+    putStrLn (check "InsertionSort" isort randomList)
 
     putStrLn "\nSorting Singleton List:\n"
     putStrLn (check "SelectionSort" ssort singletonList)
     putStrLn (check "QuickSort" qsort singletonList)
+    putStrLn (check "InsertionSort" isort singletonList)
 
     putStrLn "\nSorting Empty List:\n"
     putStrLn (check "SelectionSort" ssort emptyList)
     putStrLn (check "QuickSort" qsort emptyList)
+    putStrLn (check "InsertionSort" isort emptyList)
 
 
 -- returns String indicating if sort was succesful

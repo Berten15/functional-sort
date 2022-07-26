@@ -25,6 +25,7 @@ source-repository head
 
 library
   exposed-modules:
+      InsertionSort
       QuickSort
       SelectionSort
   other-modules:

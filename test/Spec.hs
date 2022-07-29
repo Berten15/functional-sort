@@ -9,7 +9,7 @@ import InsertionSort (isort)
 randomList :: [Int]
 randomList = shuffle' [1..1000] 1000 (mkStdGen 15)
 
-algorithms = [("SelectionSort", ssort), ("QuickSort", qsort), ("InsertionSort", isort)]
+algorithms = [("SelectionSort", ssort), ("QuickSort", qsort), ("InsertionSort", isort), ("MergeSort", isort)]
 cases = [("Random List", randomList), ("Singleton List", [15]), ("Empty List", [])]
 
 main :: IO ()
@@ -19,7 +19,7 @@ main = checkAll cases algorithms
 checkAll :: [(String, [Int])] -> [(String, [Int] -> [Int])] -> IO ()
 checkAll [] algorithms = return ()
 checkAll cases algorithms = do
-    putStrLn ("\nSorting" ++ (fst $ head cases) ++ ":\n")
+    putStrLn ("\nSorting" ++ fst (head cases) ++ ":\n")
     checkCase algorithms (snd $ head cases)
     checkAll (tail cases) algorithms
 
@@ -27,7 +27,7 @@ checkAll cases algorithms = do
 checkCase :: [(String, [Int] -> [Int])] -> [Int] -> IO ()
 checkCase [] toSort = return ()
 checkCase algorithms toSort = do
-    putStrLn (check (fst $ head algorithms) (snd $ head algorithms) randomList)
+    putStrLn (uncurry check (head algorithms) randomList)
     checkCase (tail algorithms) toSort
 
 -- returns String indicating if sort was succesful

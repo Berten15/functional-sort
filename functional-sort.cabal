@@ -25,7 +25,9 @@ source-repository head
 
 library
   exposed-modules:
+      BubbleSort
       InsertionSort
+      MergeSort
       QuickSort
       SelectionSort
   other-modules:
@@ -34,6 +36,8 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , deepseq
+    , parallel
     , random
     , random-shuffle
   default-language: Haskell2010
@@ -47,7 +51,9 @@ executable functional-sort-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , deepseq
     , functional-sort
+    , parallel
     , random
     , random-shuffle
   default-language: Haskell2010
@@ -62,7 +68,9 @@ test-suite functional-sort-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , deepseq
     , functional-sort
+    , parallel
     , random
     , random-shuffle
   default-language: Haskell2010

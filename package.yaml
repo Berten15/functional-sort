@@ -23,6 +23,8 @@ dependencies:
 - base >= 4.7 && < 5
 - random-shuffle
 - random
+- parallel
+- deepseq
 
 library:
   source-dirs: src

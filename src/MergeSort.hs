@@ -4,9 +4,10 @@ module MergeSort
 
 msort :: [Int] -> [Int]
 msort [] = []
+msort [x] = [x]
 msort list = do
-    let (first, last) = splitAt (length list `div` 2) list
-    merge (msort first) (msort last)
+    let (firstHalf, lastHalf) = splitAt (length list `div` 2) list
+    merge (msort firstHalf) (msort lastHalf)
 
 merge :: [Int] -> [Int] -> [Int]
 merge x [] = x

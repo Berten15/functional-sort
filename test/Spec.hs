@@ -11,7 +11,7 @@ import BubbleSort ( bsort )
 randomList :: [Int]
 randomList = shuffle' [1..1000] 1000 (mkStdGen 15)
 
-algorithms = [("SelectionSort", ssort), ("QuickSort", qsort), ("InsertionSort", isort), ("MergeSort", isort), ("BubbleSort", bsort)]
+algorithms = [("SelectionSort", ssort), ("QuickSort", qsort), ("InsertionSort", isort), ("MergeSort", msort), ("BubbleSort", bsort)]
 cases = [("Random List", randomList), ("Singleton List", [15]), ("Empty List", [])]
 
 main :: IO ()

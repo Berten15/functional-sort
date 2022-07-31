@@ -29,6 +29,7 @@ library
       InsertionSort
       MergeSort
       QuickSort
+      RandomList
       SelectionSort
   other-modules:
       Paths_functional_sort

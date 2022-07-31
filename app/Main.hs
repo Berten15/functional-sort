@@ -1,7 +1,6 @@
 module Main where
 
 import System.Random.Shuffle ( shuffle' )
-import System.Random ( mkStdGen )
 import Text.Printf ( printf )
 import Control.DeepSeq ( NFData(..) )
 import System.CPUTime ( getCPUTime )
@@ -12,20 +11,19 @@ import QuickSort ( qsort)
 import InsertionSort (isort)
 import MergeSort ( msort )
 import BubbleSort ( bsort )
+import RandomList ( getRandomList, getNearlySortedList, getReverseSortedList, getFewUniqueList)
 
 -- parameters:
 listLength :: Int
 listLength = 10^3
+nTimes :: Int
+nTimes = 10^3
 
-randomList :: [Int]
-randomList = shuffle' [1..listLength] listLength (mkStdGen 15)
-
-sortedList :: [Int]
-sortedList = isort randomList
+seed = 1 :: Int
 
 
-cases :: [(String, [Int])]
-cases = [("Random", randomList), ("Nearly Sorted", [1, 2, 4, 3]), ("Inverse Sorted", [4, 3, 2, 1]), ("Few Unique", [3, 1, 3, 1])]
+cases :: [(String, Int -> Int ->[Int])]
+cases = [("Random", getRandomList), ("Nearly Sorted", getNearlySortedList), ("Inverse Sorted", getReverseSortedList), ("Few Unique", getFewUniqueList)]
 algorithms :: [(String, [Int] -> [Int])]
 algorithms = [("SelectionSort", ssort), ("QuickSort", qsort), ("InsertionSort", isort), ("MergeSort", msort), ("BubbleSort", bsort)]
 
@@ -38,14 +36,15 @@ main = do
     printTable algorithms cases
 
 
-printCases :: [(String, [Int])] -> IO ()
+
+printCases :: [(String, Int -> Int ->[Int])] -> IO ()
 printCases [] = printf "\n"
 printCases cases = do
     printf " %14s |" (fst $ head cases)
     printCases (tail cases)
 
 
-printTable :: [(String, [Int] -> [Int])] -> [(String, [Int])] -> IO ()
+printTable :: [(String, [Int] -> [Int])] -> [(String, Int -> Int ->[Int])] -> IO ()
 printTable [] cases = return ()
 printTable algorithms cases = do
     printf $ replicate 80 '-' ++ "\n"
@@ -54,11 +53,12 @@ printTable algorithms cases = do
     printTable (tail algorithms) cases
 
 
-printAlgorithm :: ([Int] -> [Int]) -> [(String, [Int])] -> IO ()
+printAlgorithm :: ([Int] -> [Int]) -> [(String, Int -> Int ->[Int])] -> IO ()
 printAlgorithm algorithm [] = printf "\n"
 printAlgorithm algorithm cases = do
-    duration <- time $ algorithm $ snd $ head cases
-    printf " %-11.2f ms |" duration
+    let toSort = (snd $ head cases) listLength seed
+    duration <- time (algorithm toSort)
+    printf " %-11.2f ms |" (duration )-- / fromIntegral nTimes)
     printAlgorithm algorithm (tail cases)
 
 

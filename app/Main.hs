@@ -58,7 +58,7 @@ printAlgorithm algorithm [] = printf "\n"
 printAlgorithm algorithm cases = do
     let toSort = (snd $ head cases) listLength seed
     duration <- time (algorithm toSort)
-    printf " %-11.2f ms |" (duration )-- / fromIntegral nTimes)
+    printTime duration
     printAlgorithm algorithm (tail cases)
 
 
@@ -69,3 +69,10 @@ time y = do
     x <- evaluate y
     end   <- getCPUTime
     return (fromIntegral (end - start) / (10^9))
+
+
+printTime :: Double -> IO ()
+printTime time
+    | time < 1      = printf " %11.2f μs |" (time * 1000.0)
+    | time > 1000   = printf " %11.2f s |"  (time / 1000.0)
+    | otherwise     = printf " %11.2f ms |" time

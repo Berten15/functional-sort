@@ -15,7 +15,7 @@ import RandomList ( getRandomList, getNearlySortedList, getReverseSortedList, ge
 
 -- parameters:
 listLength :: Int
-listLength = 10^3
+listLength = 10^6
 nTimes :: Int
 nTimes = 10^3
 
@@ -23,10 +23,16 @@ seed = 1 :: Int
 
 
 cases :: [(String, Int -> Int ->[Int])]
-cases = [("Random", getRandomList), ("Nearly Sorted", getNearlySortedList), ("Inverse Sorted", getReverseSortedList), ("Few Unique", getFewUniqueList)]
+cases = [("Random", getRandomList), 
+         ("Nearly Sorted", getNearlySortedList),
+         ("Inverse Sorted", getReverseSortedList), 
+         ("Few Unique", getFewUniqueList)]
 algorithms :: [(String, [Int] -> [Int])]
-algorithms = [("SelectionSort", ssort), ("QuickSort", qsort), ("InsertionSort", isort), ("MergeSort", msort), ("BubbleSort", bsort)]
-
+algorithms = [("SelectionSort", ssort), 
+              ("QuickSort", qsort), 
+              ("InsertionSort", isort), 
+              ("MergeSort", msort)]
+              -- ("BubbleSort", bsort)] -- bubbleSort is too slow :/
 
 main :: IO ()
 main = do
@@ -34,7 +40,6 @@ main = do
     printf $ replicate 16 ' ' ++ "|"
     printCases cases
     printTable algorithms cases
-
 
 
 printCases :: [(String, Int -> Int ->[Int])] -> IO ()
@@ -47,7 +52,7 @@ printCases cases = do
 printTable :: [(String, [Int] -> [Int])] -> [(String, Int -> Int ->[Int])] -> IO ()
 printTable [] cases = return ()
 printTable algorithms cases = do
-    printf $ replicate 80 '-' ++ "\n"
+    printf $ replicate 85 '-' ++ "\n"
     printf "%15s |" (fst $ head algorithms)
     printAlgorithm (snd $ head algorithms) cases
     printTable (tail algorithms) cases
@@ -74,5 +79,5 @@ time y = do
 printTime :: Double -> IO ()
 printTime time
     | time < 1      = printf " %11.2f μs |" (time * 1000.0)
-    | time > 1000   = printf " %11.2f s |"  (time / 1000.0)
+    | time > 1000   = printf " %11.2f  s |" (time / 1000.0)
     | otherwise     = printf " %11.2f ms |" time

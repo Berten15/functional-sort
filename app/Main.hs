@@ -2,9 +2,10 @@ module Main where
 
 import System.Random.Shuffle ( shuffle' )
 import Text.Printf ( printf )
-import Control.DeepSeq ( NFData(..) )
+import Control.DeepSeq ( NFData(..), deepseq )
 import System.CPUTime ( getCPUTime )
 import Control.Exception ( evaluate )
+import Data.List ( sort )
 
 import SelectionSort ( ssort )
 import QuickSort ( qsort)
@@ -12,36 +13,48 @@ import InsertionSort (isort)
 import MergeSort ( msort )
 import BubbleSort ( bsort )
 import RandomList ( getRandomList, getNearlySortedList, getReverseSortedList, getFewUniqueList)
+import Control.Monad (replicateM)
+import GHC.Read (list)
 
 -- parameters:
 listLength :: Int
-listLength = 10^6
+listLength = 10^2
 nTimes :: Int
-nTimes = 10^3
-
+nTimes = 10^1
+seed :: Int
 seed = 1 :: Int
 
 
 cases :: [(String, Int -> Int ->[Int])]
-cases = [("Random", getRandomList), 
+cases = [("Random", getRandomList),
          ("Nearly Sorted", getNearlySortedList),
-         ("Inverse Sorted", getReverseSortedList), 
+         ("Inverse Sorted", getReverseSortedList),
          ("Few Unique", getFewUniqueList)]
 algorithms :: [(String, [Int] -> [Int])]
-algorithms = [("SelectionSort", ssort), 
-              ("QuickSort", qsort), 
-              ("InsertionSort", isort), 
-              ("MergeSort", msort)]
+algorithms = [("SelectionSort", ssort),
+              ("QuickSort", qsort),
+              ("InsertionSort", isort),
+              ("MergeSort", msort),
+              ("Built-in", sort)]
               -- ("BubbleSort", bsort)] -- bubbleSort is too slow :/
 
 main :: IO ()
 main = do
-    printf "\n\n\n"
+    printf "\n"
+    printf "/------------------------------------------------\\\n"
+    printf "|                                                |\n"
+    printf "|   Benchmark of functional sorting algorithms   |\n"
+    printf "|                                                |\n"
+    printf "\\------------------------------------------------/\n"
+    printf "\n\n"
+
     printf $ replicate 16 ' ' ++ "|"
     printCases cases
     printTable algorithms cases
+    printf "\n"
 
 
+-- Prints header of the table
 printCases :: [(String, Int -> Int ->[Int])] -> IO ()
 printCases [] = printf "\n"
 printCases cases = do
@@ -49,6 +62,7 @@ printCases cases = do
     printCases (tail cases)
 
 
+-- Prints entire table
 printTable :: [(String, [Int] -> [Int])] -> [(String, Int -> Int ->[Int])] -> IO ()
 printTable [] cases = return ()
 printTable algorithms cases = do
@@ -58,26 +72,35 @@ printTable algorithms cases = do
     printTable (tail algorithms) cases
 
 
+-- Prints one line of the table corresponding to one algorithm
 printAlgorithm :: ([Int] -> [Int]) -> [(String, Int -> Int ->[Int])] -> IO ()
 printAlgorithm algorithm [] = printf "\n"
 printAlgorithm algorithm cases = do
-    let toSort = (snd $ head cases) listLength seed
-    duration <- time (algorithm toSort)
-    printTime duration
+    duration <- timeN nTimes algorithm (snd $ head cases) listLength seed
+    printTime $ duration / fromIntegral nTimes
     printAlgorithm algorithm (tail cases)
 
 
--- function to measure execution time in ms (adapted from the Haskell Wiki)
-time :: (Num t, NFData t) => [t] -> IO Double
-time y = do
-    start <- getCPUTime
-    x <- evaluate y
-    end   <- getCPUTime
+-- Measuers execution time of algorithm n times
+timeN :: Int -> ([Int] -> [Int]) -> (Int -> Int ->[Int]) -> Int -> Int -> IO Double
+timeN 0 algorithm getList listLength seed = return 0.0
+timeN n algorithm getList listLength seed = do
+    duration <- timeOnce algorithm getList listLength seed
+    rest <- timeN (n-1) algorithm getList listLength (seed+1)
+    return (duration + rest)
+
+-- Measuers execution time of algorithm once
+timeOnce :: ([Int] -> [Int]) -> (Int -> Int ->[Int]) -> Int -> Int -> IO Double
+timeOnce algorithm getList listLength seed = do
+    let toSort = getList listLength seed
+    start <- toSort `deepseq` getCPUTime
+    let sorted = algorithm toSort
+    end   <- sorted `deepseq` getCPUTime
     return (fromIntegral (end - start) / (10^9))
 
 
 printTime :: Double -> IO ()
 printTime time
-    | time < 1      = printf " %11.2f μs |" (time * 1000.0)
-    | time > 1000   = printf " %11.2f  s |" (time / 1000.0)
-    | otherwise     = printf " %11.2f ms |" time
+    | time < 1      = printf "\x1b[32m %11.2f μs \x1b[0m|" (time * 1000.0)
+    | time > 1000   = printf "\x1b[31m %11.2f  s \x1b[0m|" (time / 1000.0)
+    | otherwise     = printf "\x1b[33m %11.2f ms \x1b[0m|" time

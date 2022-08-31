@@ -46,7 +46,7 @@ main = do
     printf "|   Benchmark of functional sorting algorithms   |\n"
     printf "|                                                |\n"
     printf "\\------------------------------------------------/\n"
-    printf "\n\n"
+    printf "\nSorting lists of length %d, repeated %d times.\n\n" listLength nTimes
 
     printf $ replicate 16 ' ' ++ "|"
     printCases cases
@@ -54,7 +54,7 @@ main = do
     printf "\n"
 
 
--- Prints header of the table
+-- Prints cases in header of the table
 printCases :: [(String, Int -> Int ->[Int])] -> IO ()
 printCases [] = printf "\n"
 printCases cases = do
@@ -81,7 +81,7 @@ printAlgorithm algorithm cases = do
     printAlgorithm algorithm (tail cases)
 
 
--- Measuers execution time of algorithm n times
+-- Measures execution time of algorithm n times
 timeN :: Int -> ([Int] -> [Int]) -> (Int -> Int ->[Int]) -> Int -> Int -> IO Double
 timeN 0 algorithm getList listLength seed = return 0.0
 timeN n algorithm getList listLength seed = do

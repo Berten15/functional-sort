@@ -18,9 +18,9 @@ import GHC.Read (list)
 
 -- parameters:
 listLength :: Int
-listLength = 10^2
+listLength = 10^4
 nTimes :: Int
-nTimes = 10^1
+nTimes = 10^2
 seed :: Int
 seed = 1 :: Int
 
